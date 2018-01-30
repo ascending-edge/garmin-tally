@@ -9,6 +9,7 @@ Connect IQ devices.  It is simple and unobtrusive.
 
 - start/stop - activates adjustment mode.  In adjustment mode you can
   increment, decrement, and clear the counter to zero.
+  Double-pressing this button will increment the counter.
   
 - up - in adjustment mode this increases the count by one
 
@@ -27,6 +28,7 @@ at least one person learn the Connect IQ platform more quickly.
 ## Source
 
 The source code will soon be published on GitHub.
+
 
 ## Known Issues
 

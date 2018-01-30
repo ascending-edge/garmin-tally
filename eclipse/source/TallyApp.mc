@@ -3,7 +3,7 @@
  *
  * This application class holds the model for the Tally widget.
  * 
- * Copyright (c) 2017 Ascending Edge, LLC.
+ * Copyright (c) 2017, 2018 Ascending Edge, LLC.
  */
 using Toybox.Application as App;
 
@@ -35,8 +35,14 @@ class TallyApp extends App.AppBase
           m_count = 0;
           m_mode = MODE_VIEW;
      }
+
+
+     function incBy(howMuch)
+     {
+          m_count += howMuch;
+     }
+
      
-    
      function inc() 
      {
           ++m_count;

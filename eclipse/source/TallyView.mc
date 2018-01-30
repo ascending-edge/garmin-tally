@@ -3,7 +3,7 @@
  *
  * This class handles the drawing of the Tally view.
  * 
- * Copyright (c) 2017 Ascending Edge, LLC.
+ * Copyright (c) 2017, 2018 Ascending Edge, LLC.
  */
 using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
