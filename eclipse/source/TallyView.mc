@@ -15,121 +15,177 @@ using Toybox.Application as App;
  */
 class TallyView extends Ui.View 
 {
+     const LABEL_FONT = Gfx.FONT_SYSTEM_MEDIUM;
+     
      /// Ascending Edge Logo
 	var m_logo = null;
 
-     /// Application name
-	var m_name = null;
+     /// This is the label for the widget name, Tally
+	var m_labelApp = null;
 
-     /// Application instance
-	var m_app = null;
+     /// This is the counter value.
+     var m_labelCounter = null;
 
-     const m_VPAD = 10;
-     const m_2VPAD = m_VPAD * 2;
+     // These are the widgets that make up the legend
+     var m_labelInc = null;
+     var m_labelDec = null;
+     var m_labelReset = null;
+     var m_label2x = null;
 
-     var m_WIDTH = 0;
-     var m_HEIGHT = 0;
-     var m_HALF_WIDTH = 0;
-     var m_HALF_HEIGHT = 0;
+     /// This is for convenience to avoid calling getApp() over and
+     /// over
+     var m_app = null;
 
-     var m_LOGO_X = 0;
-     var m_LOGO_Y = 0;
-
-     const m_COUNTER_FONT = Gfx.FONT_SYSTEM_NUMBER_THAI_HOT;
-     var m_COUNTER_X = 0;
-     var m_COUNTER_Y = 0;
-
-     const m_LABEL_FONT = Gfx.FONT_SYSTEM_LARGE;
-     const m_NAME_FONT = m_LABEL_FONT;
-     
-     var m_INC_X = 0;
-     var m_INC_Y = 0;
-
-     var m_DEC_X = 0;
-     var m_DEC_Y = 0;
-
-     var m_RES_X = 0;
-     var m_RES_Y = 0;
      
      function initialize() 
      {
           System.println("initialize");          
-          m_logo = Ui.loadResource(Rez.Drawables.LauncherIcon);
-          m_name = Ui.loadResource(Rez.Strings.AppName);
+          m_logo = new WatchUi.Bitmap({
+                    :rezId => Rez.Drawables.LauncherIcon,
+                         :locX => WatchUi.LAYOUT_HALIGN_CENTER,
+                         :locY => WatchUi.LAYOUT_VALIGN_BOTTOM,
+                         });
+          
+          var name = Ui.loadResource(Rez.Strings.AppName);
+          m_labelApp = new WatchUi.Text({
+                    :text => name,
+                         :color => Graphics.COLOR_BLACK,
+                         :font => Gfx.FONT_SYSTEM_LARGE,
+                         :locX => WatchUi.LAYOUT_HALIGN_CENTER,
+                         :locY => 10});
+          m_labelCounter = new WatchUi.Text({
+                    :color => Graphics.COLOR_BLACK,
+                         :font => Gfx.FONT_SYSTEM_NUMBER_THAI_HOT,
+                         :locX => WatchUi.LAYOUT_HALIGN_CENTER,
+                         :locY => WatchUi.LAYOUT_VALIGN_CENTER});
+
+          m_labelInc = new WatchUi.Text({
+                    :text => "+",
+                         :color => Graphics.COLOR_BLACK,
+                         :font => LABEL_FONT,
+                         :justification =>
+                         Gfx.TEXT_JUSTIFY_LEFT
+                         | Gfx.TEXT_JUSTIFY_VCENTER});
+          m_labelDec = new WatchUi.Text({
+                    :text => "-",
+                         :color => Graphics.COLOR_RED,
+                         :font => LABEL_FONT,
+                         :justification =>
+                         Gfx.TEXT_JUSTIFY_LEFT
+                         | Gfx.TEXT_JUSTIFY_VCENTER});
+          m_labelReset = new WatchUi.Text({
+                    :text => "0",
+                         :color => Graphics.COLOR_BLACK,
+                         :font => LABEL_FONT,
+                         :justification =>
+                         Gfx.TEXT_JUSTIFY_RIGHT
+                         | Gfx.TEXT_JUSTIFY_VCENTER});
+          m_label2x = new WatchUi.Text({
+                    :text => "2x",
+                         :color => Graphics.COLOR_BLACK,
+                         :font => LABEL_FONT,
+                         :justification =>
+                         Gfx.TEXT_JUSTIFY_RIGHT
+                         | Gfx.TEXT_JUSTIFY_VCENTER});
+          
           m_app = App.getApp();
-    	
           View.initialize();
      }
 
-     // Resources are loaded here
+
+     /**
+      * This finds the coordinates of a point on the circumference of
+      * a circle.  This is used here to find the correct location of
+      * the legend labels.
+      *
+      * @param angle which point on the circle (0 is 3 o'clock and it
+      * goes clockwise thus 6 o'clock is 900).
+      *
+      * @param x x position of center of circle
+      *
+      * @param y y position of center of circle
+      *
+      * @param radius the size of the circle
+      *
+      * @return an array of 2 points: x,y representing the position on
+      * the circle
+      * 
+      */
+     function circleXY(angle, x, y, radius)
+     {
+          // x = center_x + radius * cos(angle)
+          // y = center_y + radius * sin(angle)
+          var coord = new[2];
+          var angle_radians = angle * Math.PI / 180;
+          coord[0] = x + radius * Math.cos(angle_radians);
+          coord[1] = y + radius * Math.sin(angle_radians);
+          return coord;
+     }
+
+     
      function onLayout(dc)
      {
           System.println("onLayout");
           
-          m_WIDTH = dc.getWidth();
-          m_HEIGHT = dc.getHeight();
-          m_HALF_WIDTH = m_WIDTH / 2.0;
-          m_HALF_HEIGHT = m_HEIGHT / 2.0;
+          var width = dc.getWidth();
+          var height = dc.getHeight();
+          var halfWidth = width / 2;
+          var halfHeight = height / 2;
 
-          m_LOGO_X = m_HALF_WIDTH - (m_logo.getWidth() / 2);
-          m_LOGO_Y = m_HEIGHT - m_logo.getHeight() - m_VPAD;
+          // visual padding
+          var pad = 5;
+          
+          var xy = circleXY(180, halfWidth, halfHeight, halfWidth);
+          m_labelInc.setLocation(xy[0] + pad, xy[1]);
 
-          m_COUNTER_X = m_HALF_WIDTH;
-          m_COUNTER_Y = m_HALF_HEIGHT - (dc.getFontHeight(m_COUNTER_FONT) / 2);
+          xy = circleXY(150, halfWidth, halfHeight, halfWidth);
+          m_labelDec.setLocation(xy[0] + pad, xy[1]);
 
-          m_INC_X = 0;
-          m_INC_Y = m_HALF_HEIGHT;
+          xy = circleXY(30, halfWidth, halfHeight, halfWidth);
+          m_labelReset.setLocation(xy[0] - pad, xy[1]);
 
-          m_DEC_X = 17;
-          m_DEC_Y = m_HALF_HEIGHT + 50;
+          xy = circleXY(330, halfWidth, halfHeight, halfWidth);
+          m_label2x.setLocation(xy[0] - pad, xy[1] + pad);
+     }
 
-          var text = "0";
-          var textDim = dc.getTextDimensions(text, m_LABEL_FONT);
-          m_RES_X = m_WIDTH - textDim[0];
-          m_RES_Y = m_HALF_HEIGHT + 50;
-     }     
 
+     /**
+      * Draws the labels that mark the buttons.  This varies based on
+      * mode.
+      */
+     function drawLegend(dc)
+     {
+          if(m_app.getMode() == m_app.MODE_ADJUST)
+          {
+               m_labelInc.draw(dc);
+               m_labelDec.draw(dc);
+               m_labelReset.draw(dc);
+               m_label2x.setText("Cancel");
+          }
+          else
+          {
+               m_label2x.setText("2x");
+          }
+          m_label2x.draw(dc);          
+     }
+
+     
      /**
       * This draws the screen.
       */
      function onUpdate(dc) 
      {
-          System.println("update");
-
+          //System.println("update");
+          m_labelCounter.setText(m_app.getCount().format("%d"));
+          
           // clear the screen
           dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);
           dc.clear();
 
-          // draw the widget name (Tally)
-          dc.drawText(m_HALF_WIDTH, m_2VPAD, m_NAME_FONT,
-                      m_name, Gfx.TEXT_JUSTIFY_CENTER);
-
-          // draw the counter
-          dc.drawText(m_COUNTER_X, m_COUNTER_Y, m_COUNTER_FONT,
-                      m_app.getCount(), Gfx.TEXT_JUSTIFY_CENTER);
-
+          m_labelApp.draw(dc);
+          m_labelCounter.draw(dc);
 		        
-		// Draw the legend if in adjustment mode        
-          if(m_app.getMode() == m_app.MODE_ADJUST)
-          {
-               // increment
-               dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);
-               dc.drawText(m_INC_X, m_INC_Y, m_LABEL_FONT, "+",
-                           Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER);
-               // reset
-               dc.drawText(m_RES_X, m_RES_Y, m_LABEL_FONT, "0", 
-                           Gfx.TEXT_JUSTIFY_RIGHT| Gfx.TEXT_JUSTIFY_VCENTER);
-        	
-               // decrement
-               dc.setColor(Gfx.COLOR_RED, Gfx.COLOR_WHITE);                	
-               dc.drawText(m_DEC_X, m_DEC_Y, m_LABEL_FONT, "-",
-                           Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER);
-
-
-               dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);        	
-          }
-        
-          // AE logo
-          dc.drawBitmap(m_LOGO_X, m_LOGO_Y, m_logo);
+          drawLegend(dc);
+          m_logo.draw(dc);
      }
 }

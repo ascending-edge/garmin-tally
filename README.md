@@ -4,7 +4,6 @@ Tally is a widget for counting (i.e. keeping a tally) on Garmin
 Connect IQ devices.  It is simple and unobtrusive.
 
 
-
 ## Operation
 
 - start/stop - activates adjustment mode.  In adjustment mode you can
@@ -27,22 +26,15 @@ at least one person learn the Connect IQ platform more quickly.
 
 ## Source
 
-The source code will soon be published on GitHub.
+The source code is available on GitHub.
 
 
 ## Known Issues
 
-- On numerous devices the icon I'm using (40x40) exceeds the max.
-  More devices could be supported if I reduced the size of the icon.
-  
 - On the 920xt the text for the +/-/0 is in the wrong location due to
   the layout of the watch.  There's probably a better way to label
   button functions.
   
-- On the Forerunner 735xt, 230, and 235 the graphics collide due to the
-  sizing.  I might be able to scale everything or select a different
-  font size dynamically.
-
 - Oregon and Rino devices don't work right apparently due to poor
   button handling and the location of buttons.
 

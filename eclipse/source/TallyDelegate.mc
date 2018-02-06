@@ -58,8 +58,9 @@ class TallyDelegate extends Ui.BehaviorDelegate
                return false;
           }
           m_app.dec();
-          m_app.setMode(m_app.MODE_VIEW);
-          Ui.popView(Ui.SLIDE_IMMEDIATE);
+          //m_app.setMode(m_app.MODE_VIEW);
+          //Ui.popView(Ui.SLIDE_IMMEDIATE);
+          Ui.requestUpdate();
           return true;
      }
 
@@ -77,8 +78,9 @@ class TallyDelegate extends Ui.BehaviorDelegate
 			return false;
 		}
 		m_app.inc();
-		m_app.setMode(m_app.MODE_VIEW);
-          Ui.popView(Ui.SLIDE_IMMEDIATE);
+		//m_app.setMode(m_app.MODE_VIEW);
+          //Ui.popView(Ui.SLIDE_IMMEDIATE);
+          Ui.requestUpdate();
           return true;
      }
 
@@ -97,10 +99,11 @@ class TallyDelegate extends Ui.BehaviorDelegate
                System.println("exiting");
                return false;
           }
-          m_app.setMode(m_app.MODE_VIEW);
+          //m_app.setMode(m_app.MODE_VIEW);
           // Reset the counter
           m_app.reset();
-		Ui.popView(Ui.SLIDE_IMMEDIATE);
+		//Ui.popView(Ui.SLIDE_IMMEDIATE);
+          Ui.requestUpdate();
           return true;
      }
 
