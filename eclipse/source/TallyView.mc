@@ -24,10 +24,36 @@ class TallyView extends Ui.View
      /// Application instance
 	var m_app = null;
 
+     const m_VPAD = 10;
+     const m_2VPAD = m_VPAD * 2;
 
+     var m_WIDTH = 0;
+     var m_HEIGHT = 0;
+     var m_HALF_WIDTH = 0;
+     var m_HALF_HEIGHT = 0;
+
+     var m_LOGO_X = 0;
+     var m_LOGO_Y = 0;
+
+     const m_COUNTER_FONT = Gfx.FONT_SYSTEM_NUMBER_THAI_HOT;
+     var m_COUNTER_X = 0;
+     var m_COUNTER_Y = 0;
+
+     const m_LABEL_FONT = Gfx.FONT_SYSTEM_LARGE;
+     const m_NAME_FONT = m_LABEL_FONT;
+     
+     var m_INC_X = 0;
+     var m_INC_Y = 0;
+
+     var m_DEC_X = 0;
+     var m_DEC_Y = 0;
+
+     var m_RES_X = 0;
+     var m_RES_Y = 0;
+     
      function initialize() 
      {
-          // cached stuff
+          System.println("initialize");          
           m_logo = Ui.loadResource(Rez.Drawables.LauncherIcon);
           m_name = Ui.loadResource(Rez.Strings.AppName);
           m_app = App.getApp();
@@ -35,6 +61,33 @@ class TallyView extends Ui.View
           View.initialize();
      }
 
+     // Resources are loaded here
+     function onLayout(dc)
+     {
+          System.println("onLayout");
+          
+          m_WIDTH = dc.getWidth();
+          m_HEIGHT = dc.getHeight();
+          m_HALF_WIDTH = m_WIDTH / 2.0;
+          m_HALF_HEIGHT = m_HEIGHT / 2.0;
+
+          m_LOGO_X = m_HALF_WIDTH - (m_logo.getWidth() / 2);
+          m_LOGO_Y = m_HEIGHT - m_logo.getHeight() - m_VPAD;
+
+          m_COUNTER_X = m_HALF_WIDTH;
+          m_COUNTER_Y = m_HALF_HEIGHT - (dc.getFontHeight(m_COUNTER_FONT) / 2);
+
+          m_INC_X = 0;
+          m_INC_Y = m_HALF_HEIGHT;
+
+          m_DEC_X = 17;
+          m_DEC_Y = m_HALF_HEIGHT + 50;
+
+          var text = "0";
+          var textDim = dc.getTextDimensions(text, m_LABEL_FONT);
+          m_RES_X = m_WIDTH - textDim[0];
+          m_RES_Y = m_HALF_HEIGHT + 50;
+     }     
 
      /**
       * This draws the screen.
@@ -42,30 +95,18 @@ class TallyView extends Ui.View
      function onUpdate(dc) 
      {
           System.println("update");
-		var vpad = 10;
-		var width = dc.getWidth();
-		var height = dc.getHeight();
-		var xOver2 = width / 2;
-		var yOver2 = height / 2;
-		var font = null;
-		var y = 0;
-		var x = 0;
-		var textDim = null;
-		var text = "";
-				
+
+          // clear the screen
           dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);
           dc.clear();
 
-          // draw the widget name
-          font = Gfx.FONT_SYSTEM_LARGE;
-          //textDim = dc.getTextDimensions(m_name, font);
-          dc.drawText(xOver2, vpad * 2, font, m_name, Gfx.TEXT_JUSTIFY_CENTER);
+          // draw the widget name (Tally)
+          dc.drawText(m_HALF_WIDTH, m_2VPAD, m_NAME_FONT,
+                      m_name, Gfx.TEXT_JUSTIFY_CENTER);
 
-		// draw the counter in a large font		
-		font = Gfx.FONT_SYSTEM_NUMBER_THAI_HOT;
-		y = yOver2 - (dc.getFontHeight(font) / 2);
-          dc.drawText(xOver2, y, font, m_app.getCount(),
-                      Gfx.TEXT_JUSTIFY_CENTER);
+          // draw the counter
+          dc.drawText(m_COUNTER_X, m_COUNTER_Y, m_COUNTER_FONT,
+                      m_app.getCount(), Gfx.TEXT_JUSTIFY_CENTER);
 
 		        
 		// Draw the legend if in adjustment mode        
@@ -73,26 +114,22 @@ class TallyView extends Ui.View
           {
                // increment
                dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);
-               font = Gfx.FONT_SYSTEM_LARGE;
-               dc.drawText(0, yOver2, font, "+",
+               dc.drawText(m_INC_X, m_INC_Y, m_LABEL_FONT, "+",
                            Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER);
+               // reset
+               dc.drawText(m_RES_X, m_RES_Y, m_LABEL_FONT, "0", 
+                           Gfx.TEXT_JUSTIFY_RIGHT| Gfx.TEXT_JUSTIFY_VCENTER);
         	
                // decrement
                dc.setColor(Gfx.COLOR_RED, Gfx.COLOR_WHITE);                	
-               dc.drawText(17, yOver2 + 50, font, "-",
+               dc.drawText(m_DEC_X, m_DEC_Y, m_LABEL_FONT, "-",
                            Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER);
-        	
-               // reset
-               dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);        	
-               text = "0";
-               textDim = dc.getTextDimensions(text, font);
-               dc.drawText(width - textDim[0], yOver2 + 50, font, text, 
-                           Gfx.TEXT_JUSTIFY_RIGHT| Gfx.TEXT_JUSTIFY_VCENTER);
+
+
                dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);        	
           }
         
           // AE logo
-          dc.drawBitmap(xOver2 - (m_logo.getWidth() / 2), 
-                        height - m_logo.getHeight() - vpad, m_logo);        	
+          dc.drawBitmap(m_LOGO_X, m_LOGO_Y, m_logo);
      }
 }
