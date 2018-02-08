@@ -5,7 +5,7 @@
  * 
  * Copyright (c) 2017, 2018 Ascending Edge, LLC.
  */
-using Toybox.Application as App;
+using Toybox.Application;
 
 
 /**
@@ -13,13 +13,15 @@ using Toybox.Application as App;
  * stores the counter value.  It also keeps track of the mode (viewing
  * or adjusting).
  */
-class TallyApp extends App.AppBase
+class TallyApp extends Application.AppBase
 {
      /// Possible operating modes
 	enum 
 	{
-		MODE_ADJUST,
-		MODE_VIEW
+		MODE_ADJUST = 0,
+		MODE_VIEW,
+
+          MODE_END_MARKER
 	}
 
      /// Holds the current operating mode
@@ -37,23 +39,11 @@ class TallyApp extends App.AppBase
      }
 
 
-     function incBy(howMuch)
+     function add(howMuch)
      {
           m_count += howMuch;
      }
-
-     
-     function inc() 
-     {
-          ++m_count;
-     }
-     
     
-     function dec()
-     {
-          --m_count;
-     }
-
      
      function getCount()
      {
@@ -109,6 +99,7 @@ class TallyApp extends App.AppBase
       */
      function getInitialView() 
      {
-          return [ new TallyView(), new TallyDelegate() ];
+          //return [ new TallyView(), new TallyDelegate() ];
+          return [ new TallyView(), new TD2() ];
      }
 }
