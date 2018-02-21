@@ -3,7 +3,12 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.3.0] - 2018-02-09
+## [1.3.2] - 2018-02-21
+### Changed
+- No function changes, just graphics updates.
+
+
+## [1.3.1] - 2018-02-09
 ### Fixed
 - a rebuild of 1.3.0 that changes the version number since it seems I
   didn't build it properly yesterday.

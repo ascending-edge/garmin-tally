@@ -83,7 +83,7 @@ class TallyView extends WatchUi.View
           // Decrement label
           m_labelDec = new WatchUi.Text({
                     :text => "-",
-                         :color => Graphics.COLOR_RED,
+                         :color => Graphics.COLOR_BLUE,
                          :font => LABEL_FONT,
                          :justification =>
                          Graphics.TEXT_JUSTIFY_LEFT
